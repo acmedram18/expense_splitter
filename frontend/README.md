@@ -1,4 +1,4 @@
-# A Medias — frontend
+# EntreNos — frontend
 
 React + Vite single-page app for the Expense Splitter (see root `README.md`
 and `_docs/specs.md`).

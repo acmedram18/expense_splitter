@@ -1,15 +1,54 @@
 :root {
   --bg: #f4f6fb;
   --card: #ffffff;
+  --card-subtle: #fbfcfe;
   --border: #e3e8ef;
+  --row-sep: #f0f2f7;
   --text: #1f2430;
   --muted: #667085;
   --accent: #4c6ef5;
   --accent-dark: #3b5bdb;
   --pos: #2f9e44;
   --neg: #e03131;
-  --radius: 10px;
+  --nav-hover: #f1f3f9;
+  --icon-hover: #eef1f8;
+  --icon-danger-hover: #fdecec;
+  --focus-ring: #dbe4ff;
+  --chip-on-bg: #e7edff;
+  --chip-on-text: #3b5bdb;
+  --chip-ok-bg: #e6f4ea;
+  --banner-err-bg: #fdecec;
+  --banner-err-border: #f5c2c2;
+  --btn-disabled: #b6c0e8;
+  --backdrop: rgba(15, 23, 42, 0.45);
   --shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --radius: 10px;
+}
+
+:root[data-theme="dark"] {
+  --bg: #14161c;
+  --card: #1d2027;
+  --card-subtle: #23262e;
+  --border: #2c303b;
+  --row-sep: #262a33;
+  --text: #e6e9ef;
+  --muted: #9aa3b2;
+  --accent: #5c7cfa;
+  --accent-dark: #748ffc;
+  --pos: #40c057;
+  --neg: #ff6b6b;
+  --nav-hover: #262a33;
+  --icon-hover: #262a33;
+  --icon-danger-hover: #3a2026;
+  --focus-ring: #2e3a59;
+  --chip-on-bg: #2b3a5e;
+  --chip-on-text: #b3c4ff;
+  --chip-ok-bg: #1f3a2a;
+  --banner-err-bg: #3a2026;
+  --banner-err-border: #6b323b;
+  --btn-disabled: #3a4160;
+  --backdrop: rgba(0, 0, 0, 0.6);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 * {
@@ -74,7 +113,7 @@ h2 {
   justify-content: space-between;
   gap: 16px;
   padding: 12px 24px;
-  background: #ffffff;
+  background: var(--card);
   border-bottom: 1px solid var(--border);
 }
 
@@ -117,12 +156,30 @@ h2 {
 }
 
 .nav-link:hover {
-  background: #f1f3f9;
+  background: var(--nav-hover);
 }
 
 .nav-link.active {
   background: var(--accent);
   color: #fff;
+}
+
+.theme-toggle {
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--muted);
+  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  background: var(--nav-hover);
+  color: var(--text);
 }
 
 .content {
@@ -162,7 +219,7 @@ h2 {
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  background: #fff;
+  background: var(--card);
   color: var(--text);
   text-decoration: none;
   display: inline-flex;
@@ -182,17 +239,17 @@ h2 {
 }
 
 .btn.primary:disabled {
-  background: #b6c0e8;
+  background: var(--btn-disabled);
   cursor: not-allowed;
 }
 
 .btn.ghost {
   border-color: var(--border);
-  background: #fff;
+  background: var(--card);
 }
 
 .btn.ghost:hover {
-  background: #f6f8fc;
+  background: var(--card-subtle);
 }
 
 .btn.small {
@@ -215,12 +272,12 @@ h2 {
 }
 
 .icon-btn:hover {
-  background: #eef1f8;
+  background: var(--icon-hover);
   color: var(--text);
 }
 
 .icon-btn.danger:hover {
-  background: #fdecec;
+  background: var(--icon-danger-hover);
   color: var(--neg);
 }
 
@@ -303,7 +360,7 @@ h2 {
   align-items: center;
   justify-content: space-between;
   padding: 9px 0;
-  border-bottom: 1px solid #f0f2f7;
+  border-bottom: 1px solid var(--row-sep);
 }
 
 .balance-row:last-child {
@@ -336,7 +393,7 @@ h2 {
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 10px 12px;
-  background: #fbfcfe;
+  background: var(--card-subtle);
 }
 
 .plan-amount {
@@ -379,19 +436,24 @@ textarea {
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 8px 10px;
-  background: #fff;
+  background: var(--card);
   min-width: 0;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
-  outline: 2px solid #dbe4ff;
+  outline: 2px solid var(--focus-ring);
   border-color: var(--accent);
 }
 
 textarea {
   resize: vertical;
+}
+
+select option {
+  background: var(--card);
+  color: var(--text);
 }
 
 .row {
@@ -413,7 +475,7 @@ textarea {
 
 .chip {
   border: 1px solid var(--border);
-  background: #fff;
+  background: var(--card);
   border-radius: 999px;
   padding: 4px 12px;
   font-size: 13px;
@@ -423,14 +485,14 @@ textarea {
 }
 
 .chip.on {
-  background: #e7edff;
+  background: var(--chip-on-bg);
   border-color: var(--accent);
-  color: var(--accent-dark);
+  color: var(--chip-on-text);
 }
 
 .chip.neutral {
   cursor: default;
-  background: #f1f3f9;
+  background: var(--nav-hover);
   border-color: transparent;
   font-weight: 500;
   padding: 3px 10px;
@@ -438,7 +500,7 @@ textarea {
 
 .chip.ok {
   cursor: default;
-  background: #e6f4ea;
+  background: var(--chip-ok-bg);
   border-color: transparent;
   color: var(--pos);
   font-size: 12px;
@@ -453,7 +515,7 @@ textarea {
 
 .segmented button {
   border: none;
-  background: #fff;
+  background: var(--card);
   padding: 7px 16px;
   font: inherit;
   font-size: 14px;
@@ -542,7 +604,7 @@ textarea {
 
 .table td {
   padding: 12px 14px;
-  border-bottom: 1px solid #f0f2f7;
+  border-bottom: 1px solid var(--row-sep);
   vertical-align: middle;
 }
 
@@ -601,7 +663,7 @@ textarea {
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.45);
+  background: var(--backdrop);
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -611,11 +673,11 @@ textarea {
 }
 
 .modal {
-  background: #fff;
+  background: var(--card);
   border-radius: 14px;
   width: 100%;
   max-width: 520px;
-  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.35);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
 }
 
 .modal-head {
@@ -661,7 +723,7 @@ textarea {
 .spinner {
   width: 22px;
   height: 22px;
-  border: 3px solid #dbe4ff;
+  border: 3px solid var(--focus-ring);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
@@ -685,7 +747,7 @@ textarea {
 }
 
 .banner.error {
-  background: #fdecec;
-  border: 1px solid #f5c2c2;
+  background: var(--banner-err-bg);
+  border: 1px solid var(--banner-err-border);
   color: var(--neg);
 }

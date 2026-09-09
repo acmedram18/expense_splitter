@@ -17,11 +17,8 @@ import {
 } from "recharts";
 import { api } from "../api.js";
 import { fmtCents, monthLabel, currentMonthKey } from "../utils.js";
+import { useTheme } from "../theme.js";
 import Spinner from "../components/Spinner.jsx";
-
-const POSITIVE = "#2f9e44";
-const NEGATIVE = "#e03131";
-const NEUTRAL = "#868e96";
 
 const PALETTE = [
   "#4c6ef5",
@@ -46,6 +43,22 @@ export default function Dashboard() {
   const [data, setData] = useState(null);
   const [month, setMonth] = useState(currentMonthKey());
   const [error, setError] = useState(null);
+  const [theme] = useTheme();
+  const dark = theme === "dark";
+
+  const gridStroke = dark ? "#2b313d" : "#e9ecef";
+  const axisFill = dark ? "#9aa3b2" : "#868e96";
+  const cursorFill = dark ? "#262a33" : "#f4f6fb";
+  const tooltipStyle = {
+    backgroundColor: dark ? "#1d2027" : "#ffffff",
+    border: `1px solid ${dark ? "#2c303b" : "#e3e8ef"}`,
+    borderRadius: 8,
+    fontSize: 13,
+  };
+  const tooltipLabel = { color: dark ? "#e6e9ef" : "#1f2430" };
+  const tooltipItem = { color: dark ? "#e6e9ef" : "#1f2430" };
+  const positive = dark ? "#40c057" : "#2f9e44";
+  const negative = dark ? "#ff6b6b" : "#e03131";
 
   useEffect(() => {
     let cancelled = false;
@@ -101,7 +114,6 @@ export default function Dashboard() {
   const byMember = data.byMemberMonth.map((m) => ({
     name: m.name,
     total: m.total_cents,
-    fill: m.total_cents > 0 ? POSITIVE : NEUTRAL,
   }));
 
   return (
@@ -177,7 +189,7 @@ export default function Dashboard() {
         <section className="card">
           <h2>Who owes whom</h2>
           {data.plan.length === 0 ? (
-            <p className="muted">Everyone is settled up. 🎉</p>
+            <p className="muted">Everyone is settled up.</p>
           ) : (
             <ul className="plan-list">
               {data.plan.map((p, i) => (
@@ -198,10 +210,19 @@ export default function Dashboard() {
           <div className="chart">
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={byCategory}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e9ecef" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                <YAxis tickFormatter={(v) => fmtCents(v)} tick={{ fontSize: 11 }} />
-                <Tooltip formatter={(v) => fmtCents(v)} />
+                <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                <XAxis dataKey="name" tick={{ fontSize: 12, fill: axisFill }} />
+                <YAxis
+                  tickFormatter={(v) => fmtCents(v)}
+                  tick={{ fontSize: 11, fill: axisFill }}
+                />
+                <Tooltip
+                  formatter={(v) => fmtCents(v)}
+                  contentStyle={tooltipStyle}
+                  labelStyle={tooltipLabel}
+                  itemStyle={tooltipItem}
+                  cursor={{ fill: cursorFill }}
+                />
                 <Bar dataKey="total" radius={[4, 4, 0, 0]}>
                   {byCategory.map((_, i) => (
                     <Cell key={i} fill={PALETTE[i % PALETTE.length]} />
@@ -217,19 +238,26 @@ export default function Dashboard() {
           <div className="chart">
             <ResponsiveContainer width="100%" height={260}>
               <LineChart data={data.monthlySeries}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e9ecef" />
-                <XAxis dataKey="label" tick={{ fontSize: 12 }} />
-                <YAxis tickFormatter={(v) => fmtCents(v)} tick={{ fontSize: 11 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                <XAxis dataKey="label" tick={{ fontSize: 12, fill: axisFill }} />
+                <YAxis
+                  tickFormatter={(v) => fmtCents(v)}
+                  tick={{ fontSize: 11, fill: axisFill }}
+                />
                 <Tooltip
                   formatter={(v) => fmtCents(v)}
                   labelFormatter={(label) => `Month: ${label}`}
+                  contentStyle={tooltipStyle}
+                  labelStyle={tooltipLabel}
+                  itemStyle={tooltipItem}
+                  cursor={{ stroke: gridStroke, strokeWidth: 1.5 }}
                 />
                 <Line
                   type="monotone"
                   dataKey="total_cents"
-                  stroke="#4c6ef5"
+                  stroke={PALETTE[0]}
                   strokeWidth={2}
-                  dot={{ r: 3 }}
+                  dot={{ r: 3, fill: PALETTE[0] }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -250,17 +278,19 @@ export default function Dashboard() {
                   innerRadius={55}
                   outerRadius={90}
                   paddingAngle={2}
-                  label
+                  label={{ fill: axisFill, fontSize: 12 }}
                 >
                   {balancePie.map((entry, i) => (
-                    <Cell
-                      key={i}
-                      fill={entry.owes ? NEGATIVE : POSITIVE}
-                    />
+                    <Cell key={i} fill={entry.owes ? negative : positive} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(v, n) => [fmtCents(v), n]} />
-                <Legend />
+                <Tooltip
+                  formatter={(v, n) => [fmtCents(v), n]}
+                  contentStyle={tooltipStyle}
+                  labelStyle={tooltipLabel}
+                  itemStyle={tooltipItem}
+                />
+                <Legend wrapperStyle={{ color: axisFill }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -271,13 +301,25 @@ export default function Dashboard() {
           <div className="chart">
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={byMember}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e9ecef" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                <YAxis tickFormatter={(v) => fmtCents(v)} tick={{ fontSize: 11 }} />
-                <Tooltip formatter={(v) => fmtCents(v)} />
+                <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                <XAxis dataKey="name" tick={{ fontSize: 12, fill: axisFill }} />
+                <YAxis
+                  tickFormatter={(v) => fmtCents(v)}
+                  tick={{ fontSize: 11, fill: axisFill }}
+                />
+                <Tooltip
+                  formatter={(v) => fmtCents(v)}
+                  contentStyle={tooltipStyle}
+                  labelStyle={tooltipLabel}
+                  itemStyle={tooltipItem}
+                  cursor={{ fill: cursorFill }}
+                />
                 <Bar dataKey="total" radius={[4, 4, 0, 0]}>
                   {byMember.map((m, i) => (
-                    <Cell key={i} fill={m.total > 0 ? PALETTE[i % PALETTE.length] : NEUTRAL} />
+                    <Cell
+                      key={i}
+                      fill={m.total > 0 ? PALETTE[i % PALETTE.length] : axisFill}
+                    />
                   ))}
                 </Bar>
               </BarChart>

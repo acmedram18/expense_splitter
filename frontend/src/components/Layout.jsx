@@ -1,4 +1,6 @@
 import { NavLink, Outlet } from "react-router-dom";
+import { useTheme } from "../theme.js";
+import ThemeToggle from "./ThemeToggle.jsx";
 
 const links = [
   { to: "/", label: "Dashboard", end: true },
@@ -8,6 +10,8 @@ const links = [
 ];
 
 export default function Layout() {
+  const [theme, toggle] = useTheme();
+
   return (
     <div className="app">
       <header className="topbar">
@@ -27,6 +31,7 @@ export default function Layout() {
             </NavLink>
           ))}
         </nav>
+        <ThemeToggle theme={theme} onToggle={toggle} />
       </header>
       <main className="content">
         <Outlet />
