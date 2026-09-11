@@ -3,9 +3,9 @@ import { api } from "../api.js";
 import { parseDollars, fmtCents, todayISO } from "../utils.js";
 
 const MODES = [
-  { id: "equal", label: "Equal" },
-  { id: "percent", label: "Percentage" },
-  { id: "custom", label: "Custom amounts" },
+  { id: "equal", label: "Igual" },
+  { id: "percent", label: "Porcentaje" },
+  { id: "custom", label: "Montos personalizados" },
 ];
 
 function round2(v) {
@@ -97,7 +97,7 @@ export default function ExpenseForm({ expense, onClose, onSaved }) {
       const value =
         form.mode === "percent" ? parseFloat(raw) : parseDollars(raw);
       if (raw === undefined || raw === "" || !Number.isFinite(value) || value < 0) {
-        errors[id] = form.mode === "percent" ? "Number required" : "Amount required";
+        errors[id] = form.mode === "percent" ? "Se requiere un número" : "Se requiere un monto";
       }
     }
     if (form.mode === "percent") {
@@ -106,7 +106,7 @@ export default function ExpenseForm({ expense, onClose, onSaved }) {
         0
       );
       if (Math.abs(sum - 100) > 0.02) {
-        errors.global = `Percentages must sum to 100 (now ${round2(sum)})`;
+        errors.global = `Los porcentajes deben sumar 100 (ahora ${round2(sum)})`;
       }
     } else {
       const sum = form.participants.reduce(
@@ -114,7 +114,7 @@ export default function ExpenseForm({ expense, onClose, onSaved }) {
         0
       );
       if (amountOk && Math.abs(sum - amountCents) > 1) {
-        errors.global = `Amounts must sum to ${fmtCents(amountCents)} (now ${fmtCents(sum)})`;
+        errors.global = `Los montos deben sumar ${fmtCents(amountCents)} (ahora ${fmtCents(sum)})`;
       }
     }
     return { ok: Object.keys(errors).length === 0, errors };
@@ -243,19 +243,19 @@ export default function ExpenseForm({ expense, onClose, onSaved }) {
   return (
     <form className="expense-form" onSubmit={handleSubmit}>
       <div className="field">
-        <label htmlFor="ef-description">Description</label>
+        <label htmlFor="ef-description">Descripción</label>
         <input
           id="ef-description"
           value={form.description}
           onChange={(e) => set({ description: e.target.value })}
-          placeholder="e.g. Groceries, Rent…"
+          placeholder="p. ej. Supermercado, Alquiler…"
           autoFocus
         />
       </div>
 
       <div className="row">
         <div className="field">
-          <label htmlFor="ef-amount">Amount (USD)</label>
+          <label htmlFor="ef-amount">Monto (USD)</label>
           <input
             id="ef-amount"
             value={form.amountStr}
@@ -264,11 +264,11 @@ export default function ExpenseForm({ expense, onClose, onSaved }) {
             inputMode="decimal"
           />
           {amountStr && !amountOk && (
-            <span className="field-error">Enter a valid amount</span>
+            <span className="field-error">Ingresa un monto válido</span>
           )}
         </div>
         <div className="field">
-          <label htmlFor="ef-date">Date</label>
+          <label htmlFor="ef-date">Fecha</label>
           <input
             id="ef-date"
             type="date"
@@ -280,7 +280,7 @@ export default function ExpenseForm({ expense, onClose, onSaved }) {
 
       <div className="row">
         <div className="field">
-          <label htmlFor="ef-payer">Paid by</label>
+          <label htmlFor="ef-payer">Pagado por</label>
           <select
             id="ef-payer"
             value={form.paidById}
@@ -296,13 +296,13 @@ export default function ExpenseForm({ expense, onClose, onSaved }) {
           </select>
         </div>
         <div className="field">
-          <label htmlFor="ef-category">Category</label>
+          <label htmlFor="ef-category">Categoría</label>
           <select
             id="ef-category"
             value={form.categoryId}
             onChange={(e) => set({ categoryId: e.target.value })}
           >
-            <option value="">Uncategorized</option>
+            <option value="">Sin categoría</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -313,7 +313,7 @@ export default function ExpenseForm({ expense, onClose, onSaved }) {
       </div>
 
       <div className="field">
-        <label>Split between</label>
+        <label>Dividir entre</label>
         <div className="chip-list">
           {availableMembers.map((m) => {
             const on = form.participants.includes(m.id);
@@ -325,7 +325,7 @@ export default function ExpenseForm({ expense, onClose, onSaved }) {
                 className={`chip ${on ? "on" : ""}`}
                 onClick={() => !locked && toggleParticipant(m.id)}
                 disabled={locked}
-                title={locked ? "Inactive member keeps their share" : undefined}
+                title={locked ? "El miembro inactivo conserva su parte" : undefined}
               >
                 {m.name}
               </button>
@@ -335,7 +335,7 @@ export default function ExpenseForm({ expense, onClose, onSaved }) {
       </div>
 
       <div className="field">
-        <label>Split mode</label>
+        <label>Modo de división</label>
         <div className="segmented">
           {MODES.map((mode) => (
             <button
@@ -352,7 +352,7 @@ export default function ExpenseForm({ expense, onClose, onSaved }) {
 
       {form.mode === "percent" && (
         <div className="field">
-          <label>Percentages (must sum to 100)</label>
+          <label>Porcentajes (deben sumar 100)</label>
           <div className="split-entries">
             {form.participants.map((id) => (
               <div className="split-entry" key={id}>
@@ -380,7 +380,7 @@ export default function ExpenseForm({ expense, onClose, onSaved }) {
 
       {form.mode === "custom" && (
         <div className="field">
-          <label>Amounts per person (must sum to total)</label>
+          <label>Montos por persona (deben sumar el total)</label>
           <div className="split-entries">
             {form.participants.map((id) => (
               <div className="split-entry" key={id}>
@@ -408,17 +408,17 @@ export default function ExpenseForm({ expense, onClose, onSaved }) {
 
       {form.mode === "equal" && (
         <p className="muted">
-          Each participant pays{" "}
+          Cada participante paga{" "}
           {amountOk && form.participants.length > 0
             ? fmtCents(Math.floor(amountCents / form.participants.length))
             : "…"}
           {amountCents % form.participants.length !== 0 &&
-            " (remainder covers the payer)"}
+            " (el sobrante lo cubre quien paga)"}
         </p>
       )}
 
       <div className="field">
-        <label htmlFor="ef-notes">Notes (optional)</label>
+        <label htmlFor="ef-notes">Notas (opcional)</label>
         <textarea
           id="ef-notes"
           value={form.notes}
@@ -431,14 +431,14 @@ export default function ExpenseForm({ expense, onClose, onSaved }) {
 
       <div className="modal-actions">
         <button type="button" className="btn ghost" onClick={onClose}>
-          Cancel
+          Cancelar
         </button>
         <button
           type="submit"
           className="btn primary"
           disabled={!canSave || saving}
         >
-          {saving ? "Saving…" : expense ? "Save changes" : "Add expense"}
+          {saving ? "Guardando…" : expense ? "Guardar cambios" : "Agregar gasto"}
         </button>
       </div>
     </form>

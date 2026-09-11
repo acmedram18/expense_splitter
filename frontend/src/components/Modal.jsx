@@ -14,7 +14,7 @@ export default function Modal({ title, onClose, children }) {
       <div className="modal" onMouseDown={(e) => e.stopPropagation()}>
         <div className="modal-head">
           <h2>{title}</h2>
-          <button className="icon-btn" onClick={onClose} aria-label="Close">
+          <button className="icon-btn" onClick={onClose} aria-label="Cerrar">
             &times;
           </button>
         </div>

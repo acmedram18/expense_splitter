@@ -84,7 +84,7 @@ export default function SettleUp() {
     e.preventDefault();
     const amount = parseDollars(manual.amountStr);
     if (!Number.isFinite(amount) || amount <= 0) {
-      setError("Enter a valid amount");
+      setError("Ingresa un monto válido");
       return;
     }
     try {
@@ -119,11 +119,11 @@ export default function SettleUp() {
     <div className="page">
       <div className="page-head">
         <div>
-          <h1>Settle Up</h1>
+          <h1>Liquidar</h1>
           <p className="muted">
             {outstanding > 0
-              ? `${fmtCents(outstanding)} to be settled`
-              : "Everyone is settled up"}
+              ? `${fmtCents(outstanding)} por liquidar`
+              : "Todos están saldados"}
           </p>
         </div>
       </div>
@@ -136,13 +136,13 @@ export default function SettleUp() {
         <>
           <div className="grid two">
             <section className="card">
-              <h2>Net balances</h2>
+              <h2>Balances netos</h2>
               <div className="balance-list">
                 {balances.map((m) => (
                   <div key={m.member_id} className="balance-row">
                     <span className="balance-name">
                       {m.name}
-                      {!m.is_active && <span className="chip">inactive</span>}
+                      {!m.is_active && <span className="chip">inactivo</span>}
                     </span>
                     <span
                       className={`balance-amount ${
@@ -150,10 +150,10 @@ export default function SettleUp() {
                       }`}
                     >
                       {m.balance_cents > 0
-                        ? `is owed ${fmtCents(m.balance_cents)}`
+                        ? `le deben ${fmtCents(m.balance_cents)}`
                         : m.balance_cents < 0
-                        ? `owes ${fmtCents(-m.balance_cents)}`
-                        : "settled"}
+                        ? `debe ${fmtCents(-m.balance_cents)}`
+                        : "saldado"}
                     </span>
                   </div>
                 ))}
@@ -161,9 +161,9 @@ export default function SettleUp() {
             </section>
 
             <section className="card">
-              <h2>Suggested payments</h2>
+              <h2>Pagos sugeridos</h2>
               {plan.length === 0 ? (
-                <p className="muted">All settled — nothing suggested.</p>
+                <p className="muted">Todo saldado — no hay sugerencias.</p>
               ) : (
                 <ul className="plan-list pills">
                   {plan.map((p, i) => (
@@ -173,7 +173,7 @@ export default function SettleUp() {
                         <span className="plan-amount">{fmtCents(p.amount_cents)}</span>
                       </div>
                       <button className="btn primary small" onClick={() => markPaid(p)}>
-                        Mark as paid
+                        Marcar como pagado
                       </button>
                     </li>
                   ))}
@@ -183,10 +183,10 @@ export default function SettleUp() {
           </div>
 
           <section className="card">
-            <h2>Record a payment</h2>
+            <h2>Registrar un pago</h2>
             <form className="settle-form" onSubmit={recordManual}>
               <label className="field inline">
-                <span>Who pays</span>
+                <span>Quién paga</span>
                 <select
                   value={manual.fromId}
                   onChange={(e) =>
@@ -202,7 +202,7 @@ export default function SettleUp() {
                 </select>
               </label>
               <label className="field inline">
-                <span>Who receives</span>
+                <span>Quién recibe</span>
                 <select
                   value={manual.toId}
                   onChange={(e) =>
@@ -218,7 +218,7 @@ export default function SettleUp() {
                 </select>
               </label>
               <label className="field inline">
-                <span>Amount</span>
+                <span>Monto</span>
                 <input
                   value={manual.amountStr}
                   onChange={(e) =>
@@ -229,7 +229,7 @@ export default function SettleUp() {
                 />
               </label>
               <label className="field inline">
-                <span>Date</span>
+                <span>Fecha</span>
                 <input
                   type="date"
                   value={manual.date}
@@ -247,23 +247,23 @@ export default function SettleUp() {
                   !parseDollars(manual.amountStr)
                 }
               >
-                Record
+                Registrar
               </button>
             </form>
           </section>
 
           <section className="card">
-            <h2>Recorded payments</h2>
+            <h2>Pagos registrados</h2>
             {payments.length === 0 ? (
-              <p className="muted">No payments recorded yet.</p>
+              <p className="muted">Todavía no hay pagos registrados.</p>
             ) : (
               <table className="table">
                 <thead>
                   <tr>
-                    <th>Date</th>
-                    <th>From</th>
-                    <th>To</th>
-                    <th className="num">Amount</th>
+                    <th>Fecha</th>
+                    <th>De</th>
+                    <th>A</th>
+                    <th className="num">Monto</th>
                     <th />
                   </tr>
                 </thead>
@@ -281,7 +281,7 @@ export default function SettleUp() {
                           <button
                             className="icon-btn danger"
                             onClick={() => removePayment(p.id)}
-                            aria-label="Delete payment"
+                            aria-label="Eliminar pago"
                           >
                             ✕
                           </button>

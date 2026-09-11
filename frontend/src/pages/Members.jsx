@@ -80,7 +80,7 @@ export default function Members() {
   }
 
   async function remove(member) {
-    if (!window.confirm(`Delete ${member.name}? This cannot be undone.`)) return;
+    if (!window.confirm(`¿Eliminar a ${member.name}? Esta acción no se puede deshacer.`)) return;
     try {
       await api.deleteMember(member.id);
       await load();
@@ -96,8 +96,8 @@ export default function Members() {
     <div className="page">
       <div className="page-head">
         <div>
-          <h1>Members</h1>
-          <p className="muted">Who lives in the household.</p>
+          <h1>Miembros</h1>
+          <p className="muted">Quiénes viven en la casa.</p>
         </div>
       </div>
 
@@ -106,11 +106,11 @@ export default function Members() {
           <input
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
-            placeholder="New member name…"
-            aria-label="New member name"
+            placeholder="Nombre del nuevo miembro…"
+            aria-label="Nombre del nuevo miembro"
           />
           <button className="btn primary" disabled={!newName.trim()}>
-            Add member
+            Agregar miembro
           </button>
         </form>
       </div>
@@ -124,8 +124,8 @@ export default function Members() {
           <table className="table">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Status</th>
+                <th>Nombre</th>
+                <th>Estado</th>
                 <th className="num">Balance</th>
                 <th />
               </tr>
@@ -138,9 +138,9 @@ export default function Members() {
                     <td className="strong">{m.name}</td>
                     <td>
                       {m.is_active ? (
-                        <span className="chip ok">active</span>
+                        <span className="chip ok">activo</span>
                       ) : (
-                        <span className="chip">inactive</span>
+                        <span className="chip">inactivo</span>
                       )}
                     </td>
                     <td className={`num ${b > 0 ? "pos" : b < 0 ? "neg" : ""}`}>
@@ -154,13 +154,13 @@ export default function Members() {
                           setEditName(m.name);
                         }}
                       >
-                        Rename
+                        Renombrar
                       </button>
                       <button
                         className="btn ghost small"
                         onClick={() => toggleActive(m)}
                       >
-                        {m.is_active ? "Deactivate" : "Activate"}
+                        {m.is_active ? "Desactivar" : "Activar"}
                       </button>
                       <button
                         className="btn ghost small danger"
@@ -168,11 +168,11 @@ export default function Members() {
                         disabled={!m.is_active}
                         title={
                           m.is_active
-                            ? "Deactivate before deleting"
-                            : "Delete member"
+                            ? "Desactiva antes de eliminar"
+                            : "Eliminar miembro"
                         }
                       >
-                        Delete
+                        Eliminar
                       </button>
                     </td>
                   </tr>
@@ -184,10 +184,10 @@ export default function Members() {
       )}
 
       {editing && (
-        <Modal title="Rename member" onClose={() => setEditing(null)}>
+        <Modal title="Renombrar miembro" onClose={() => setEditing(null)}>
           <form className="expense-form" onSubmit={saveEdit}>
             <div className="field">
-              <label htmlFor="mm-name">Name</label>
+              <label htmlFor="mm-name">Nombre</label>
               <input
                 id="mm-name"
                 value={editName}
@@ -197,10 +197,10 @@ export default function Members() {
             </div>
             <div className="modal-actions">
               <button type="button" className="btn ghost" onClick={() => setEditing(null)}>
-                Cancel
+                Cancelar
               </button>
               <button type="submit" className="btn primary" disabled={!editName.trim()}>
-                Save
+                Guardar
               </button>
             </div>
           </form>

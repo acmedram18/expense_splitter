@@ -6,15 +6,15 @@
 
 import { todayISO, monthKey } from "./utils.js";
 
-const STORAGE_KEY = "expense_splitter_state_v1";
+const STORAGE_KEY = "expense_splitter_state_v2";
 
 const DEFAULT_CATEGORIES = [
-  { id: 1, name: "Rent", is_custom: false },
-  { id: 2, name: "Utilities", is_custom: false },
-  { id: 3, name: "Groceries", is_custom: false },
-  { id: 4, name: "Transport", is_custom: false },
-  { id: 5, name: "Entertainment", is_custom: false },
-  { id: 6, name: "Other", is_custom: false },
+  { id: 1, name: "Alquiler", is_custom: false },
+  { id: 2, name: "Servicios", is_custom: false },
+  { id: 3, name: "Supermercado", is_custom: false },
+  { id: 4, name: "Transporte", is_custom: false },
+  { id: 5, name: "Entretenimiento", is_custom: false },
+  { id: 6, name: "Otros", is_custom: false },
 ];
 
 let db = load();
@@ -96,34 +96,34 @@ function seed() {
   };
 
   const rent = [1, 2, 3];
-  add(1, "Rent", 150000, offsetDate(0, 1), 1, eq(rent, 150000));
-  add(2, "Rent", 150000, offsetDate(-1, 1), 1, eq(rent, 150000));
-  add(1, "Rent", 150000, offsetDate(-2, 1), 1, eq(rent, 150000));
-  add(2, "Rent", 150000, offsetDate(-3, 1), 1, eq(rent, 150000));
+  add(1, "Alquiler", 150000, offsetDate(0, 1), 1, eq(rent, 150000));
+  add(2, "Alquiler", 150000, offsetDate(-1, 1), 1, eq(rent, 150000));
+  add(1, "Alquiler", 150000, offsetDate(-2, 1), 1, eq(rent, 150000));
+  add(2, "Alquiler", 150000, offsetDate(-3, 1), 1, eq(rent, 150000));
 
-  add(1, "Electricity & water", 21500, offsetDate(-1, 9), 2, eq(rent, 21500));
+  add(1, "Luz y agua", 21500, offsetDate(-1, 9), 2, eq(rent, 21500));
   add(2, "Internet", 18900, offsetDate(-3, 12), 2, eq(rent, 18900));
-  add(3, "Electricity & water", 17300, offsetDate(-5, 8), 2, eq(rent, 17300));
+  add(3, "Luz y agua", 17300, offsetDate(-5, 8), 2, eq(rent, 17300));
 
-  add(3, "Groceries", 8400, offsetDate(0, 3), 3, eq(rent, 8400));
-  add(2, "Groceries", 6320, offsetDate(0, 4), 3, eq(rent, 6320));
-  add(1, "Groceries", 11800, offsetDate(-1, 10), 3, eq(rent, 11800));
-  add(3, "Groceries", 9100, offsetDate(-1, 18), 3, eq(rent, 9100));
-  add(2, "Groceries", 13450, offsetDate(-2, 8), 3, eq(rent, 13450));
-  add(3, "Groceries", 9800, offsetDate(-3, 15), 3, eq(rent, 9800));
-  add(1, "Groceries", 12300, offsetDate(-4, 17), 3, eq(rent, 12300));
+  add(3, "Supermercado", 8400, offsetDate(0, 3), 3, eq(rent, 8400));
+  add(2, "Supermercado", 6320, offsetDate(0, 4), 3, eq(rent, 6320));
+  add(1, "Supermercado", 11800, offsetDate(-1, 10), 3, eq(rent, 11800));
+  add(3, "Supermercado", 9100, offsetDate(-1, 18), 3, eq(rent, 9100));
+  add(2, "Supermercado", 13450, offsetDate(-2, 8), 3, eq(rent, 13450));
+  add(3, "Supermercado", 9800, offsetDate(-3, 15), 3, eq(rent, 9800));
+  add(1, "Supermercado", 12300, offsetDate(-4, 17), 3, eq(rent, 12300));
 
-  add(2, "Gas / metro card", 6800, offsetDate(-1, 12), 4, eq(rent, 6800));
-  add(3, "Gas / metro card", 4500, offsetDate(-3, 5), 4, eq(rent, 4500));
+  add(2, "Gasolina / tarjeta metro", 6800, offsetDate(-1, 12), 4, eq(rent, 6800));
+  add(3, "Gasolina / tarjeta metro", 4500, offsetDate(-3, 5), 4, eq(rent, 4500));
 
-  add(3, "Dinner out", 23000, offsetDate(-2, 21), 5, [
+  add(3, "Cena afuera", 23000, offsetDate(-2, 21), 5, [
     { member_id: 3, share_cents: 9200 },
     { member_id: 2, share_cents: 8050 },
     { member_id: 1, share_cents: 5750 },
   ], "percent");
-  add(1, "Movie night", 6000, offsetDate(-4, 25), 5, eq(rent, 6000));
+  add(1, "Noche de cine", 6000, offsetDate(-4, 25), 5, eq(rent, 6000));
 
-  add(1, "House supplies", 5400, offsetDate(-5, 20), 6, eq(rent, 5400));
+  add(1, "Artículos para la casa", 5400, offsetDate(-5, 20), 6, eq(rent, 5400));
 
   const payments = [
     { id: 1, from_member_id: 2, to_member_id: 1, amount_cents: 50000, date: offsetDate(-2, 9) },
@@ -208,7 +208,7 @@ export const api = {
   async updateMember(id, patch) {
     await delay();
     const member = db.members.find((m) => m.id === id);
-    if (!member) throw new Error("Member not found");
+    if (!member) throw new Error("Miembro no encontrado");
     if (patch.name !== undefined) member.name = patch.name;
     if (patch.is_active !== undefined) member.is_active = patch.is_active;
     persist();
@@ -220,7 +220,7 @@ export const api = {
     const used =
       db.expenses.some((e) => e.paid_by === id || e.shares.some((s) => s.member_id === id)) ||
       db.payments.some((p) => p.from_member_id === id || p.to_member_id === id);
-    if (used) throw new Error("Member is used in expenses or payments");
+    if (used) throw new Error("El miembro está en uso en gastos o pagos");
     db.members = db.members.filter((m) => m.id !== id);
     persist();
     return { ok: true };
@@ -248,7 +248,7 @@ export const api = {
   async updateExpense(id, payload) {
     await delay();
     const index = db.expenses.findIndex((e) => e.id === id);
-    if (index === -1) throw new Error("Expense not found");
+    if (index === -1) throw new Error("Gasto no encontrado");
     const expense = { ...db.expenses[index], ...payload, id };
     validateExpense(expense);
     db.expenses[index] = expense;
@@ -286,8 +286,8 @@ export const api = {
 
   async createPayment({ from_member_id, to_member_id, amount_cents, date }) {
     await delay();
-    if (from_member_id === to_member_id) throw new Error("Cannot pay yourself");
-    if (amount_cents <= 0) throw new Error("Amount must be positive");
+    if (from_member_id === to_member_id) throw new Error("No puedes pagarte a ti mismo");
+    if (amount_cents <= 0) throw new Error("El monto debe ser positivo");
     const payment = {
       id: nextId(db.payments),
       from_member_id,
@@ -336,7 +336,7 @@ export const api = {
       .sort()
       .map((key) => ({
         key,
-        label: new Date(`${key}-01`).toLocaleDateString("en-US", { month: "short" }),
+        label: new Date(`${key}-01`).toLocaleDateString("es-ES", { month: "short" }),
         total_cents: db.expenses
           .filter((e) => monthKey(e.date) === key)
           .reduce((sum, e) => sum + e.amount_cents, 0),
@@ -362,12 +362,12 @@ export const api = {
 };
 
 function validateExpense(expense) {
-  if (!expense.description?.trim()) throw new Error("Description is required");
+  if (!expense.description?.trim()) throw new Error("La descripción es obligatoria");
   if (!Number.isFinite(expense.amount_cents) || expense.amount_cents <= 0) {
-    throw new Error("Amount must be greater than zero");
+    throw new Error("El monto debe ser mayor que cero");
   }
   const total = expense.shares.reduce((sum, s) => sum + s.share_cents, 0);
   if (total !== expense.amount_cents) {
-    throw new Error("Shares must sum to the expense amount");
+    throw new Error("Las partes deben sumar el monto del gasto");
   }
 }

@@ -3,10 +3,10 @@ import { useTheme } from "../theme.js";
 import ThemeToggle from "./ThemeToggle.jsx";
 
 const links = [
-  { to: "/", label: "Dashboard", end: true },
-  { to: "/expenses", label: "Expenses" },
-  { to: "/members", label: "Members" },
-  { to: "/settle", label: "Settle Up" },
+  { to: "/", label: "Resumen", end: true },
+  { to: "/expenses", label: "Gastos" },
+  { to: "/members", label: "Miembros" },
+  { to: "/settle", label: "Liquidar" },
 ];
 
 export default function Layout() {

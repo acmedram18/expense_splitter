@@ -17,7 +17,7 @@ export function parseDollars(input) {
 export function fmtDate(iso) {
   if (!iso) return "";
   const [y, m, d] = iso.split("-").map(Number);
-  return new Date(y, m - 1, d).toLocaleDateString("en-US", {
+  return new Date(y, m - 1, d).toLocaleDateString("es-ES", {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -38,7 +38,7 @@ export function monthKey(iso) {
 export function monthLabel(key) {
   if (!key) return "";
   const [y, m] = key.split("-").map(Number);
-  return new Date(y, m - 1, 1).toLocaleDateString("en-US", {
+  return new Date(y, m - 1, 1).toLocaleDateString("es-ES", {
     month: "long",
     year: "numeric",
   });

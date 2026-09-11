@@ -8,7 +8,7 @@ import ExpenseForm from "../components/ExpenseForm.jsx";
 function splitSummary(expense, members) {
   const name = (id) => members.find((m) => m.id === id)?.name ?? "?";
   const n = expense.shares.length;
-  if (expense.split_mode === "equal") return `Equal ÷ ${n}`;
+  if (expense.split_mode === "equal") return `Igual ÷ ${n}`;
   if (expense.split_mode === "percent") {
     const max = expense.shares
       .slice()
@@ -99,11 +99,11 @@ export default function Expenses() {
       .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : a.id - b.id));
   }, [expenses, filters]);
 
-  const catName = (id) => categories.find((c) => c.id === id)?.name ?? "Uncategorized";
+  const catName = (id) => categories.find((c) => c.id === id)?.name ?? "Sin categoría";
   const memberName = (id) => members.find((m) => m.id === id)?.name ?? "?";
 
   async function handleDelete(expense) {
-    if (!window.confirm(`Delete “${expense.description}”?`)) return;
+    if (!window.confirm(`¿Eliminar “${expense.description}”?`)) return;
     try {
       await api.deleteExpense(expense.id);
       await load();
@@ -128,22 +128,22 @@ export default function Expenses() {
     <div className="page">
       <div className="page-head">
         <div>
-          <h1>Expenses</h1>
-          <p className="muted">{filtered.length} expenses · {fmtCents(total)} total</p>
+          <h1>Gastos</h1>
+          <p className="muted">{filtered.length} gastos · {fmtCents(total)} en total</p>
         </div>
         <button className="btn primary" onClick={openNew}>
-          + Add expense
+          + Agregar gasto
         </button>
       </div>
 
       <div className="filters">
         <label className="field inline">
-          <span>Month</span>
+          <span>Mes</span>
           <select
             value={filters.month}
             onChange={(e) => setFilters((f) => ({ ...f, month: e.target.value }))}
           >
-            <option value="">All</option>
+            <option value="">Todos</option>
             {monthOptions.map((k) => (
               <option key={k} value={k}>
                 {monthLabel(k)}
@@ -152,14 +152,14 @@ export default function Expenses() {
           </select>
         </label>
         <label className="field inline">
-          <span>Category</span>
+          <span>Categoría</span>
           <select
             value={filters.category}
             onChange={(e) =>
               setFilters((f) => ({ ...f, category: e.target.value }))
             }
           >
-            <option value="">All</option>
+            <option value="">Todos</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -168,14 +168,14 @@ export default function Expenses() {
           </select>
         </label>
         <label className="field inline">
-          <span>Member</span>
+          <span>Miembro</span>
           <select
             value={filters.member}
             onChange={(e) =>
               setFilters((f) => ({ ...f, member: e.target.value }))
             }
           >
-            <option value="">Everyone</option>
+            <option value="">Todos</option>
             {members.map((m) => (
               <option key={m.id} value={m.id}>
                 {m.name}
@@ -188,7 +188,7 @@ export default function Expenses() {
             className="btn ghost small"
             onClick={() => setFilters({ month: "", category: "", member: "" })}
           >
-            Clear
+            Limpiar
           </button>
         )}
       </div>
@@ -202,12 +202,12 @@ export default function Expenses() {
           <table className="table">
             <thead>
               <tr>
-                <th>Expense</th>
-                <th>Date</th>
-                <th>Category</th>
-                <th>Paid by</th>
-                <th>Split</th>
-                <th className="num">Amount</th>
+                <th>Gasto</th>
+                <th>Fecha</th>
+                <th>Categoría</th>
+                <th>Pagado por</th>
+                <th>División</th>
+                <th className="num">Monto</th>
                 <th />
               </tr>
             </thead>
@@ -226,13 +226,13 @@ export default function Expenses() {
                   <td className="split-cell">{splitSummary(e, members)}</td>
                   <td className="num strong">{fmtCents(e.amount_cents)}</td>
                   <td className="actions">
-                    <button className="icon-btn" onClick={() => openEdit(e)} aria-label="Edit">
+                    <button className="icon-btn" onClick={() => openEdit(e)} aria-label="Editar">
                       ✎
                     </button>
                     <button
                       className="icon-btn danger"
                       onClick={() => handleDelete(e)}
-                      aria-label="Delete"
+                      aria-label="Eliminar"
                     >
                       ✕
                     </button>
@@ -242,7 +242,7 @@ export default function Expenses() {
               {filtered.length === 0 && (
                 <tr>
                   <td colSpan={7} className="empty">
-                    No expenses match. Add your first one!
+                    No hay gastos que coincidan. ¡Agrega el primero!
                   </td>
                 </tr>
               )}
@@ -253,7 +253,7 @@ export default function Expenses() {
 
       {showForm && (
         <Modal
-          title={editing ? "Edit expense" : "Add expense"}
+          title={editing ? "Editar gasto" : "Agregar gasto"}
           onClose={() => setShowForm(false)}
         >
           <ExpenseForm

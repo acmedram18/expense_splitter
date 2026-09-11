@@ -57,8 +57,6 @@ export default function Dashboard() {
   };
   const tooltipLabel = { color: dark ? "#e6e9ef" : "#1f2430" };
   const tooltipItem = { color: dark ? "#e6e9ef" : "#1f2430" };
-  const positive = dark ? "#40c057" : "#2f9e44";
-  const negative = dark ? "#ff6b6b" : "#e03131";
 
   useEffect(() => {
     let cancelled = false;
@@ -82,7 +80,7 @@ export default function Dashboard() {
   }, [data]);
 
   if (error) {
-    return <div className="banner error">Failed to load dashboard: {error}</div>;
+    return <div className="banner error">No se pudo cargar el resumen: {error}</div>;
   }
   if (!data) return <Spinner />;
 
@@ -104,11 +102,10 @@ export default function Dashboard() {
 
   const balancePie = activeMembers
     .filter((m) => m.balance_cents !== 0)
-    .map((m) => ({
+    .map((m, i) => ({
       name: m.name,
       value: Math.abs(m.balance_cents),
-      sign: m.balance_cents > 0 ? "+" : "-",
-      owes: m.balance_cents < 0,
+      fill: PALETTE[i % PALETTE.length],
     }));
 
   const byMember = data.byMemberMonth.map((m) => ({
@@ -120,12 +117,12 @@ export default function Dashboard() {
     <div className="page">
       <div className="page-head">
         <div>
-          <h1>Dashboard</h1>
+          <h1>Resumen</h1>
           <p className="muted">Quién debe a quién y cuánto estamos gastando.</p>
         </div>
         <div className="head-actions">
           <label className="field inline">
-            <span>Month</span>
+            <span>Mes</span>
             <select value={month} onChange={(e) => setMonth(e.target.value)}>
               {monthOptions.map((k) => (
                 <option key={k} value={k}>
@@ -135,22 +132,22 @@ export default function Dashboard() {
             </select>
           </label>
           <Link className="btn primary" to="/expenses">
-            + Add expense
+            + Agregar gasto
           </Link>
         </div>
       </div>
 
       <div className="summary-grid">
         <SummaryCard
-          label={`Spent in ${monthLabel(month)}`}
+          label={`Gastado en ${monthLabel(month)}`}
           value={fmtCents(data.totalMonthCents)}
         />
         <SummaryCard
-          label="Total spending this month"
+          label="Total gastado este mes"
           value={fmtCents(spendingThisMonth)}
         />
         <SummaryCard
-          label="Outstanding balance"
+          label="Saldo pendiente"
           value={fmtCents(outstanding)}
           tone="blue"
         />
@@ -158,7 +155,7 @@ export default function Dashboard() {
 
       <div className="grid two">
         <section className="card">
-          <h2>Net balances</h2>
+          <h2>Balances netos</h2>
           <div className="balance-list">
             {data.balances.map((m) => {
               const cls =
@@ -171,14 +168,14 @@ export default function Dashboard() {
                 <div key={m.member_id} className="balance-row">
                   <span className="balance-name">
                     {m.name}
-                    {!m.is_active && <span className="chip">inactive</span>}
+                    {!m.is_active && <span className="chip">inactivo</span>}
                   </span>
                   <span className={`balance-amount ${cls}`}>
                     {m.balance_cents > 0
-                      ? `is owed ${fmtCents(m.balance_cents)}`
+                      ? `le deben ${fmtCents(m.balance_cents)}`
                       : m.balance_cents < 0
-                      ? `owes ${fmtCents(-m.balance_cents)}`
-                      : "settled"}
+                      ? `debe ${fmtCents(-m.balance_cents)}`
+                      : "saldado"}
                   </span>
                 </div>
               );
@@ -187,14 +184,14 @@ export default function Dashboard() {
         </section>
 
         <section className="card">
-          <h2>Who owes whom</h2>
+          <h2>Quién le debe a quién</h2>
           {data.plan.length === 0 ? (
-            <p className="muted">Everyone is settled up.</p>
+            <p className="muted">Todos están saldados.</p>
           ) : (
             <ul className="plan-list">
               {data.plan.map((p, i) => (
                 <li key={i}>
-                  <strong>{p.from_name}</strong> pays{" "}
+                  <strong>{p.from_name}</strong> paga{" "}
                   <strong>{p.to_name}</strong>
                   <span className="plan-amount">{fmtCents(p.amount_cents)}</span>
                 </li>
@@ -206,7 +203,7 @@ export default function Dashboard() {
 
       <div className="grid two">
         <section className="card">
-          <h2>Spending by category · {monthLabel(month)}</h2>
+          <h2>Gasto por categoría · {monthLabel(month)}</h2>
           <div className="chart">
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={byCategory}>
@@ -234,7 +231,7 @@ export default function Dashboard() {
         </section>
 
         <section className="card">
-          <h2>Spending over time</h2>
+          <h2>Gasto a lo largo del tiempo</h2>
           <div className="chart">
             <ResponsiveContainer width="100%" height={260}>
               <LineChart data={data.monthlySeries}>
@@ -246,7 +243,7 @@ export default function Dashboard() {
                 />
                 <Tooltip
                   formatter={(v) => fmtCents(v)}
-                  labelFormatter={(label) => `Month: ${label}`}
+                  labelFormatter={(label) => `Mes: ${label}`}
                   contentStyle={tooltipStyle}
                   labelStyle={tooltipLabel}
                   itemStyle={tooltipItem}
@@ -267,7 +264,7 @@ export default function Dashboard() {
 
       <div className="grid two">
         <section className="card">
-          <h2>Balance distribution</h2>
+          <h2>Distribución de balances</h2>
           <div className="chart">
             <ResponsiveContainer width="100%" height={260}>
               <PieChart>
@@ -281,7 +278,7 @@ export default function Dashboard() {
                   label={{ fill: axisFill, fontSize: 12 }}
                 >
                   {balancePie.map((entry, i) => (
-                    <Cell key={i} fill={entry.owes ? negative : positive} />
+                    <Cell key={i} fill={entry.fill} />
                   ))}
                 </Pie>
                 <Tooltip
@@ -297,7 +294,7 @@ export default function Dashboard() {
         </section>
 
         <section className="card">
-          <h2>Paid by member · {monthLabel(month)}</h2>
+          <h2>Pagado por miembro · {monthLabel(month)}</h2>
           <div className="chart">
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={byMember}>
