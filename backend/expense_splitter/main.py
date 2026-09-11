@@ -1,12 +1,16 @@
+from pathlib import Path
+
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from . import logic, schemas
 from .errors import ConflictError, NotFoundError, ValidationError
-from .store import MockStore, demo_seed
+from .store import MockStore
 
-store = MockStore(demo_seed())
+MOCK_DB_PATH = str(Path(__file__).resolve().parent / "db_mock.json")
+
+store = MockStore(persist_path=MOCK_DB_PATH)
 
 
 def get_store() -> MockStore:

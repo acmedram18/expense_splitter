@@ -106,6 +106,24 @@ def test_update_expense(client):
     assert len(body["shares"]) == 2
 
 
+def test_update_expense_persists_across_requests(client):
+    created = client.post("/api/expenses", json=VALID_EXPENSE).json()
+    payload = {
+        **VALID_EXPENSE,
+        "description": "Cena afuera",
+        "amount_cents": 12000,
+        "shares": [
+            {"member_id": 1, "share_cents": 6000},
+            {"member_id": 2, "share_cents": 6000},
+        ],
+    }
+    client.put(f"/api/expenses/{created['id']}", json=payload)
+    listed = client.get("/api/expenses").json()
+    assert listed[0]["description"] == "Cena afuera"
+    assert listed[0]["amount_cents"] == 12000
+    assert len(listed[0]["shares"]) == 2
+
+
 def test_update_expense_not_found(client):
     assert client.put("/api/expenses/999", json=VALID_EXPENSE).status_code == 404
 

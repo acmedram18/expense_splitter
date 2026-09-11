@@ -17,6 +17,7 @@ ENV/
 # Database
 *.sqlite3
 db.sqlite3
+backend/expense_splitter/db_mock.json
 
 # Node (frontend)
 node_modules/

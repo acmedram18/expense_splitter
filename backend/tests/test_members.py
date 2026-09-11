@@ -35,6 +35,14 @@ def test_update_member_is_active(client):
     assert res.json()["is_active"] is False
 
 
+def test_update_member_persists_across_requests(client):
+    client.patch("/api/members/1", json={"is_active": False})
+    listed = client.get("/api/members").json()
+    by_id = {m["id"]: m for m in listed}
+    assert by_id[1]["is_active"] is False
+    assert by_id[2]["is_active"] is True
+
+
 def test_update_member_not_found(client):
     assert client.patch("/api/members/999", json={"name": "x"}).status_code == 404
 
