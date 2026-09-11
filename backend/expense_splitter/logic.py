@@ -149,6 +149,7 @@ def dashboard_aggregates(
         {
             "member_id": m["id"],
             "name": m["name"],
+            "is_active": m["is_active"],
             "balance_cents": balances[m["id"]],
         }
         for m in members

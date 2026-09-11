@@ -71,9 +71,9 @@ def test_dashboard_with_no_expenses(client):
     ]
     assert body["monthlySeries"] == []
     assert body["balances"] == [
-        {"member_id": 1, "name": "Ana", "balance_cents": 0},
-        {"member_id": 2, "name": "Luis", "balance_cents": 0},
-        {"member_id": 3, "name": "Marta", "balance_cents": 0},
+        {"member_id": 1, "name": "Ana", "is_active": True, "balance_cents": 0},
+        {"member_id": 2, "name": "Luis", "is_active": True, "balance_cents": 0},
+        {"member_id": 3, "name": "Marta", "is_active": True, "balance_cents": 0},
     ]
 
 

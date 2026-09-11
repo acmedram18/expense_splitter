@@ -263,7 +263,7 @@ export default function ExpenseForm({ expense, onClose, onSaved }) {
             placeholder="0.00"
             inputMode="decimal"
           />
-          {amountStr && !amountOk && (
+          {form.amountStr && !amountOk && (
             <span className="field-error">Ingresa un monto válido</span>
           )}
         </div>
